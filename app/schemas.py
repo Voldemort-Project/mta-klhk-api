@@ -12,6 +12,14 @@ class JenisBelanjaReadSchema(BaseModel):
         from_attributes = True
 
 
+class SubJenisBelanjaReadOptionSchema(BaseModel):
+    id: int
+    label: str
+
+    class Config:
+        from_attributes = True
+
+
 class ProposalCreateSchema(BaseModel):
     user_id: str
     jenis_belanja_id: int
@@ -43,6 +51,17 @@ class ProposalJobCreateSchema(BaseModel):
     status: Optional[str]
     completed_at: Optional[datetime.datetime]
     total_file: Optional[int]
+
+    class Config:
+        from_attributes = True
+
+
+class ProposalScoreOverlapCreateSchema(BaseModel):
+    proposal_id: int
+    work_unit: Optional[str]
+    total_budget: Optional[float]
+    score: Optional[int]
+    reason: Optional[str]
 
     class Config:
         from_attributes = True

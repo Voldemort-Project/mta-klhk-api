@@ -1,5 +1,14 @@
 import datetime
-from sqlalchemy import Column, DateTime, ForeignKey, Integer, Numeric, String, Text
+from sqlalchemy import (
+    Boolean,
+    Column,
+    DateTime,
+    ForeignKey,
+    Integer,
+    Numeric,
+    String,
+    Text,
+)
 from sqlalchemy.orm import relationship
 from app.db import Base
 
@@ -22,8 +31,10 @@ class SubJenisBelanja(Base):
     __tablename__ = "sub_jenis_belanja"
 
     id = Column(Integer, primary_key=True)
-    shoping_id = Column(
-        Integer, ForeignKey("jenis_belanja.id", ondelete="CASCADE"), nullable=False
+    jenis_belanja_id = Column(
+        Integer,
+        ForeignKey("jenis_belanja.id", ondelete="CASCADE"),
+        nullable=False,
     )
     label = Column(String)
     description = Column(String, nullable=True)
@@ -41,18 +52,42 @@ class Proposal(Base):
     updated_at = Column(DateTime, default=datetime.datetime.now)
     user_id = Column(String, nullable=False)
     jenis_belanja_id = Column(
-        Integer, ForeignKey("jenis_belanja.id", ondelete="CASCADE"), nullable=False
+        Integer,
+        ForeignKey("jenis_belanja.id", ondelete="CASCADE"),
+        nullable=False,
     )
     sub_jenis_belanja_id = Column(
-        Integer, ForeignKey("sub_jenis_belanja.id", ondelete="CASCADE"), nullable=False
+        Integer,
+        ForeignKey("sub_jenis_belanja.id", ondelete="CASCADE"),
+        nullable=False,
     )
     satuan_kerja = Column(String, nullable=True)
     anggaran = Column(Numeric, nullable=True, default=0)
     status = Column(String, nullable=True, default="waiting")
-    jenis_belanja = relationship("JenisBelanja", back_populates="proposal")
-    sub_jenis_belanja = relationship("SubJenisBelanja", back_populates="proposal")
+    proposal_verification = Column(Text, nullable=True)
+    summary = Column(Text, nullable=True)
+    evaluasi_letter = Column(Text, nullable=True)
+    rincian_output = Column(Text, nullable=True)
+    note = Column(Text, nullable=True)
+
+    jenis_belanja = relationship(
+        "JenisBelanja",
+        back_populates="proposal",
+    )
+    sub_jenis_belanja = relationship(
+        "SubJenisBelanja",
+        back_populates="proposal",
+    )
     proposal_document = relationship("ProposalDocument", back_populates="proposal")
     proposal_job = relationship("ProposalJob", back_populates="proposal")
+    proposal_score_overlap = relationship(
+        "ProposalScoreOverlap",
+        back_populates="proposal",
+    )
+    proposal_map_priority = relationship(
+        "ProposalMapPriority",
+        back_populates="proposal",
+    )
 
 
 class ProposalDocument(Base):
@@ -76,6 +111,8 @@ class ProposalDocument(Base):
         ForeignKey("proposal_job.id", ondelete="CASCADE"),
         nullable=True,
     )
+    is_success_uploaded = Column(Boolean, nullable=True, default=False)
+
     proposal = relationship("Proposal", back_populates="proposal_document")
     runtime = relationship("ProposalJob", back_populates="proposal_document")
 
@@ -98,3 +135,38 @@ class ProposalJob(Base):
     completed_at = Column(DateTime, nullable=True)
     proposal = relationship("Proposal", back_populates="proposal_job")
     proposal_document = relationship("ProposalDocument", back_populates="runtime")
+
+
+class ProposalScoreOverlap(Base):
+    __tablename__ = "proposal_score_overlap"
+
+    id = Column(Integer, primary_key=True)
+    created_at = Column(DateTime, default=datetime.datetime.now)
+    updated_at = Column(DateTime, default=datetime.datetime.now)
+    proposal_id = Column(
+        Integer,
+        ForeignKey("proposal.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    work_unit = Column(String, nullable=True)
+    total_budget = Column(Numeric, nullable=True)
+    score = Column(Integer, nullable=True)
+    reason = Column(Text, nullable=True)
+    proposal = relationship("Proposal", back_populates="proposal_score_overlap")
+
+
+class ProposalMapPriority(Base):
+    __tablename__ = "proposal_map_priority"
+
+    id = Column(Integer, primary_key=True)
+    created_at = Column(DateTime, default=datetime.datetime.now)
+    updated_at = Column(DateTime, default=datetime.datetime.now)
+    proposal_id = Column(
+        Integer,
+        ForeignKey("proposal.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    label = Column(String, nullable=False)
+    score = Column(Integer, nullable=False)
+    reason = Column(Text, nullable=True)
+    proposal = relationship("Proposal", back_populates="proposal_map_priority")

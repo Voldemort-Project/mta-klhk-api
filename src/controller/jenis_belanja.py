@@ -3,7 +3,6 @@ from fastapi import APIRouter, Depends
 from app import schemas
 from sqlalchemy.ext.asyncio import AsyncSession
 from src.repository import belanja
-import asyncio
 
 from app.db import get_session
 
@@ -17,6 +16,13 @@ async def get_shopping_type(session: AsyncSession = Depends(get_session)):
     return results
 
 
-@router.get("/sub-type")
-async def get_shopping_sub_type():
-    return {"message": "shopping sub type"}
+@router.get(
+    "/{id}/sub-type",
+    response_model=List[schemas.SubJenisBelanjaReadOptionSchema],
+)
+async def get_shopping_sub_type(
+    id: int,
+    session: AsyncSession = Depends(get_session),
+):
+    results = await belanja.get_sub_jenis_belanja(session, id)
+    return results
