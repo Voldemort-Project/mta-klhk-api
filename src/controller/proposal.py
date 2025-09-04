@@ -134,3 +134,12 @@ async def get_detail_proposal_summary(
 ):
     result = await proposal.get_proposal_by_id(session, id)
     return {"message": "Success", "data": result.summary if result else None}
+
+
+@router.get("/{id}/evaluation-letter")
+async def get_detail_evaluation_letter(
+    id: int,
+    session: AsyncSession = Depends(get_session),
+):
+    result = await proposal.get_proposal_by_id(session, id)
+    return {"message": "Success", "data": result.evaluasi_letter if result else None}
