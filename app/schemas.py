@@ -91,3 +91,15 @@ class ProposalMapPriorityReadSchema(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class ProposalScoreOverlapReadSchema(BaseModel):
+    id: int
+    work_unit: Optional[str]
+    total_budget: Optional[str]
+    score: Optional[int]
+    reason: Optional[str]
+    rincian_output: Optional[str]
+
+    class Config:
+        from_attributes = True

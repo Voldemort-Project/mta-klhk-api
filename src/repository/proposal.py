@@ -15,7 +15,7 @@ from app import models, schemas
 from app.config import settings
 from src.constant.globals import USER_ID
 from utils.clear import clear_markdown
-from utils.converter import string_to_float
+from utils.converter import format_rupiah, string_to_float
 
 
 async def create_proposal(
@@ -583,3 +583,17 @@ async def get_proposal_map_priority(
     )
     rProposalMapPriority = await session.execute(qProposalMapPriority)
     return rProposalMapPriority.scalars().all()
+
+
+async def get_proposal_score_overlap(
+    session: AsyncSession,
+    proposal_id: int,
+) -> List[models.ProposalScoreOverlap]:
+    qProposalScoreOverlap = select(models.ProposalScoreOverlap).where(
+        models.ProposalScoreOverlap.proposal_id == proposal_id,
+    )
+    rProposalScoreOverlap = await session.execute(qProposalScoreOverlap)
+    docs = rProposalScoreOverlap.scalars().all()
+    for doc in docs:
+        doc.total_budget = format_rupiah(doc.total_budget)
+    return docs

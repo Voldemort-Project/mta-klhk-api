@@ -110,3 +110,15 @@ async def get_detail_proposal_map_priority(
 ):
     result = await proposal.get_proposal_map_priority(session, id)
     return result
+
+
+@router.get(
+    "/{id}/score-overlap",
+    response_model=List[schemas.ProposalScoreOverlapReadSchema],
+)
+async def get_detail_proposal_score_overlap(
+    id: int,
+    session: AsyncSession = Depends(get_session),
+):
+    result = await proposal.get_proposal_score_overlap(session, id)
+    return result
