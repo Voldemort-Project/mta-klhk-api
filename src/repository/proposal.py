@@ -1,11 +1,12 @@
 # from sqlalchemy import select
 import base64
 import datetime
+from re import A
 import httpx
 
 from sqlalchemy import select
 from sqlalchemy.orm import joinedload
-from typing import List, Tuple
+from typing import Any, List, Tuple
 from fastapi import UploadFile
 from sqlalchemy.ext.asyncio import AsyncSession
 from app import models, schemas
@@ -157,6 +158,13 @@ async def background_process_job_agent(
                 print(f"Error Hit API: {e}")
                 propJob.total_failed_file += 1
 
+        is_error_upload = propJob.total_failed_file > 0
+
+        if await check_or_throw_error(
+            session, propJob, is_error_upload, "Error Upload Document"
+        ):
+            return
+
         # Get Proposal Verification
         body_verification = create_body_proposal_verification(propDocs)
         print(f"Extract Verification")
@@ -174,6 +182,11 @@ async def background_process_job_agent(
             proposal.proposal_verification = clear_markdown(
                 res_verification_json["result"]["data"]
             )
+
+        if await check_or_throw_error(
+            session, propJob, is_error_upload, "Error Extract Verification Document"
+        ):
+            return
 
         kak_base64 = [item for item in propDocs if item.type == "kak"][
             0
@@ -214,6 +227,11 @@ async def background_process_job_agent(
                 )
                 proposalMapPriorities.append(p)
 
+        if await check_or_throw_error(
+            session, propJob, is_error_upload, "Error Extract Map Priority"
+        ):
+            return
+
         # Create Extractor Proposal
         body_extractor_proposal = create_body_proposal_extractor(kak_base64)
         res_extractor_proposal = await client.post(
@@ -237,6 +255,11 @@ async def background_process_job_agent(
                     proposal.satuan_kerja = output["value"]
                 elif output["key"] == "Total Biaya":
                     proposal.anggaran = string_to_float(output["value"])
+
+        if await check_or_throw_error(
+            session, propJob, is_error_upload, "Error Extract Extractor Proposal"
+        ):
+            return
 
         # Create Proposal Score Overlap
         proposalScoreOverlaps: List[models.ProposalScoreOverlap] = []
@@ -264,6 +287,11 @@ async def background_process_job_agent(
                 )
                 proposalScoreOverlaps.append(p)
 
+        if await check_or_throw_error(
+            session, propJob, is_error_upload, "Error Extract Score Overlap"
+        ):
+            return
+
         # Create Proposal Summary
         body_proposal_summary = create_body_proposal_summary(
             proposal_verification_response=proposal.proposal_verification,
@@ -283,6 +311,11 @@ async def background_process_job_agent(
             res_proposal_summary_json = res_proposal_summary.json()
             proposal.summary = clear_markdown(res_proposal_summary_json["data"])
 
+        if await check_or_throw_error(
+            session, propJob, is_error_upload, "Error Extract Proposal Summary"
+        ):
+            return
+
         # Create Proposal Evaluation Letter
         body_evaluation_letter = create_body_proposal_evaluation_letter(proposal)
         print(f"Extract Proposal Evaluation Letter")
@@ -300,18 +333,23 @@ async def background_process_job_agent(
                 res_evaluation_letter_json["data"]
             )
 
+        if await check_or_throw_error(
+            session,
+            propJob,
+            is_error_upload,
+            "Error Extract Proposal Evaluation Letter",
+        ):
+            return
+
     propJob.status = "completed"
     propJob.completed_at = datetime.datetime.now()
-    propJob.is_error = is_error_upload
 
     print(f"Proposal Job {propJob.status}")
 
-    if not is_error_upload:
-        session.add_all(proposalMapPriorities)
-        session.add_all(proposalScoreOverlaps)
-        session.add_all(propDocs)
-        session.add(proposal)
-
+    session.add_all(proposalMapPriorities)
+    session.add_all(proposalScoreOverlaps)
+    session.add_all(propDocs)
+    session.add(proposal)
     session.add(propJob)
 
     await session.commit()
@@ -410,3 +448,21 @@ def create_body_proposal_evaluation_letter(doc: models.Proposal) -> dict:
         "user_remarks": doc.note if doc.note else "",
         "llm_config": get_llm_config(),
     }
+
+
+async def check_or_throw_error(
+    session: AsyncSession,
+    propJob: models.ProposalJob,
+    is_error: bool = False,
+    err: Any = None,
+) -> bool:
+    if is_error:
+        print(f"An error is occurred: {err if err else 'Unknown error'}")
+        propJob.status = "completed"
+        propJob.completed_at = datetime.datetime.now()
+        propJob.is_error = True
+        session.add(propJob)
+        await session.commit()
+        await session.close()
+        return True
+    return False
