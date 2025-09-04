@@ -1,12 +1,14 @@
 # from sqlalchemy import select
+import asyncio
 import base64
 import datetime
+import json
 from re import A
 import httpx
 
 from sqlalchemy import select
 from sqlalchemy.orm import joinedload
-from typing import Any, List, Tuple
+from typing import Any, AsyncGenerator, List, Tuple
 from fastapi import UploadFile
 from sqlalchemy.ext.asyncio import AsyncSession
 from app import models, schemas
@@ -467,3 +469,36 @@ async def check_or_throw_error(
         await session.close()
         return True
     return False
+
+
+async def get_proposal_job_stream(
+    session: AsyncSession, job_id: int
+) -> AsyncGenerator[str, None]:
+    qProposalJob = select(models.ProposalJob).where(models.ProposalJob.id == job_id)
+    rProposalJob = await session.execute(qProposalJob)
+    propJob = rProposalJob.scalars().first()
+    while propJob.status != "completed":
+        data = {
+            "id": propJob.id,
+            "status": propJob.status,
+            "completed_at": propJob.completed_at,
+            "total_file": propJob.total_file,
+            "total_uploaded_file": propJob.total_uploaded_file,
+            "total_failed_file": propJob.total_failed_file,
+            "error_message": propJob.error_message,
+            "is_error": propJob.is_error,
+        }
+        yield f"data: {json.dumps(data)}\n\n"
+        await asyncio.sleep(1)
+        propJob = await session.refresh(propJob)
+    data = {
+        "id": propJob.id,
+        "status": propJob.status,
+        "completed_at": propJob.completed_at,
+        "total_file": propJob.total_file,
+        "total_uploaded_file": propJob.total_uploaded_file,
+        "total_failed_file": propJob.total_failed_file,
+        "error_message": propJob.error_message,
+        "is_error": propJob.is_error,
+    }
+    yield f"data: {json.dumps(data)}\n\n"

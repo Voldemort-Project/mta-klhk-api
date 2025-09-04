@@ -4,7 +4,10 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from src.router.router import apirouter
 
-origins = ["https://klhk-budget-preclearance.vercel.app"]
+origins = [
+    "https://klhk-budget-preclearance.vercel.app",
+    "http://localhost:8080",
+]
 
 
 app = FastAPI()
