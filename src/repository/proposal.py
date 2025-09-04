@@ -13,6 +13,7 @@ from fastapi import UploadFile
 from sqlalchemy.ext.asyncio import AsyncSession
 from app import models, schemas
 from app.config import settings
+from src.constant.globals import USER_ID
 from utils.clear import clear_markdown
 from utils.converter import string_to_float
 
@@ -22,7 +23,7 @@ async def create_proposal(
     proposal: schemas.ProposalCreateSchema,
 ) -> models.Proposal:
     new_proposal = models.Proposal(
-        user_id=proposal.user_id,
+        user_id=USER_ID,
         jenis_belanja_id=proposal.jenis_belanja_id,
         sub_jenis_belanja_id=proposal.sub_jenis_belanja_id,
     )
@@ -513,3 +514,31 @@ async def get_proposal_job_stream(
             break
 
         await asyncio.sleep(1)
+
+
+async def get_list_proposal(session: AsyncSession) -> List[models.Proposal]:
+    qProposal = (
+        select(
+            models.Proposal.id,
+            models.Proposal.user_id,
+            models.Proposal.jenis_belanja_id,
+            models.JenisBelanja.label.label("jenis_belanja"),
+            models.Proposal.sub_jenis_belanja_id,
+            models.SubJenisBelanja.label.label("sub_jenis_belanja"),
+            models.Proposal.satuan_kerja,
+            models.Proposal.anggaran,
+            models.Proposal.status,
+            models.Proposal.rincian_output,
+        )
+        .join(
+            models.JenisBelanja,
+            models.JenisBelanja.id == models.Proposal.jenis_belanja_id,
+        )
+        .join(
+            models.SubJenisBelanja,
+            models.SubJenisBelanja.id == models.Proposal.sub_jenis_belanja_id,
+        )
+        .where(models.Proposal.user_id == USER_ID)
+    )
+    rProposal = await session.execute(qProposal)
+    return rProposal.mappings().all()

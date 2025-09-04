@@ -21,7 +21,6 @@ class SubJenisBelanjaReadOptionSchema(BaseModel):
 
 
 class ProposalCreateSchema(BaseModel):
-    user_id: str
     jenis_belanja_id: int
     sub_jenis_belanja_id: int
 
@@ -62,6 +61,22 @@ class ProposalScoreOverlapCreateSchema(BaseModel):
     total_budget: Optional[float]
     score: Optional[int]
     reason: Optional[str]
+
+    class Config:
+        from_attributes = True
+
+
+class ProposalListReadSchema(BaseModel):
+    id: int
+    user_id: str
+    jenis_belanja_id: int
+    jenis_belanja: str
+    sub_jenis_belanja_id: int
+    sub_jenis_belanja: str
+    satuan_kerja: Optional[str]
+    anggaran: Optional[float]
+    status: str
+    rincian_output: Optional[str]
 
     class Config:
         from_attributes = True

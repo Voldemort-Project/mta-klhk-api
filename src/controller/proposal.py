@@ -59,9 +59,10 @@ async def upload_document_proposal(
     }
 
 
-@router.get("/")
-def get_list_budget():
-    return {"message": "budget fetched"}
+@router.get("/", response_model=List[schemas.ProposalListReadSchema])
+async def get_list_proposal(session: AsyncSession = Depends(get_session)):
+    proposals = await proposal.get_list_proposal(session)
+    return proposals
 
 
 @router.get("/{id}")
