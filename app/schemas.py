@@ -28,6 +28,13 @@ class ProposalCreateSchema(BaseModel):
         from_attributes = True
 
 
+class ProposalUpdateSchema(BaseModel):
+    note: Optional[str]
+
+    class Config:
+        from_attributes = True
+
+
 class ProposalDocumentCreateSchema(BaseModel):
     file_name: str
     encoding_base_64: str

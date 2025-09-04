@@ -2,6 +2,7 @@ from typing import List, Optional
 from fastapi import (
     APIRouter,
     BackgroundTasks,
+    Body,
     Depends,
     File,
     Form,
@@ -133,7 +134,13 @@ async def get_detail_proposal_summary(
     session: AsyncSession = Depends(get_session),
 ):
     result = await proposal.get_proposal_by_id(session, id)
-    return {"message": "Success", "data": result.summary if result else None}
+    return {
+        "message": "Success",
+        "data": {
+            "summary": result.summary if result else None,
+            "note": result.note if result else None,
+        },
+    }
 
 
 @router.get("/{id}/evaluation-letter")
@@ -143,3 +150,13 @@ async def get_detail_evaluation_letter(
 ):
     result = await proposal.get_proposal_by_id(session, id)
     return {"message": "Success", "data": result.evaluasi_letter if result else None}
+
+
+@router.post("/{id}/notes")
+async def update_proposal_notes(
+    id: int,
+    input: schemas.ProposalUpdateSchema,
+    session: AsyncSession = Depends(get_session),
+):
+    await proposal.update_proposal(session, id, input)
+    return {"message": "Success"}

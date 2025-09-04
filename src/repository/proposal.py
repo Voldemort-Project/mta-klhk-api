@@ -597,3 +597,16 @@ async def get_proposal_score_overlap(
     for doc in docs:
         doc.total_budget = format_rupiah(doc.total_budget)
     return docs
+
+
+async def update_proposal(
+    session: AsyncSession,
+    id: int,
+    input: schemas.ProposalUpdateSchema,
+) -> models.Proposal:
+    a = await get_proposal_by_id(session, id)
+    a.note = input.note
+    session.add(a)
+    await session.commit()
+    await session.refresh(a)
+    return a
