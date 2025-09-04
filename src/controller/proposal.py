@@ -1,5 +1,14 @@
 from typing import List, Optional
-from fastapi import APIRouter, BackgroundTasks, Depends, File, Form, UploadFile
+from fastapi import (
+    APIRouter,
+    BackgroundTasks,
+    Depends,
+    File,
+    Form,
+    HTTPException,
+    Query,
+    UploadFile,
+)
 from sqlalchemy.ext.asyncio import AsyncSession
 from app import schemas
 from app.db import get_session
@@ -35,6 +44,7 @@ async def upload_document_proposal(
     proposal_id: int = Form(...),
     kak_file: UploadFile = File(...),
     rab_file: UploadFile = File(...),
+    sp_file: UploadFile = File(...),
     doc_supports: Optional[List[UploadFile]] = File([]),
     session: AsyncSession = Depends(get_session),
 ):
@@ -42,6 +52,7 @@ async def upload_document_proposal(
         proposal_id=proposal_id,
         kak_file=kak_file,
         rab_file=rab_file,
+        sp_file=sp_file,
         doc_supports=doc_supports,
     )
 
@@ -72,3 +83,18 @@ async def get_detail_proposal_verification(
 ):
     result = await proposal.get_proposal_verification(session, id)
     return {"message": "Success", "data": result.proposal_verification}
+
+
+@router.get("/{id}/document")
+async def get_detail_proposal_document(
+    id: int,
+    type: str = Query(...),
+    session: AsyncSession = Depends(get_session),
+):
+    if type not in ["kak", "rab", "sp"]:
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid type. Should be kak, rab, or sp",
+        )
+    result = await proposal.get_proposal_document(session, id, type)
+    return {"message": "Success", "data": result.summary if result else None}

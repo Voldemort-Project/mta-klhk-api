@@ -42,6 +42,7 @@ class ProposalDocumentUploadSchema(BaseModel):
     proposal_id: int
     kak_file: UploadFile
     rab_file: UploadFile
+    sp_file: UploadFile
     doc_supports: Optional[List[UploadFile]]
 
 

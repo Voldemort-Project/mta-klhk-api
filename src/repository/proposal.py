@@ -41,6 +41,7 @@ async def upload_document_proposal(
     bulk_proposal_document: List[models.ProposalDocument] = []
     kak_file_name, kak_file_base64 = encoding_base_64(dto.kak_file)
     rab_file_name, rab_file_base64 = encoding_base_64(dto.rab_file)
+    sp_file_name, sp_file_base64 = encoding_base_64(dto.sp_file)
     proposal_job = models.ProposalJob(
         proposal_id=dto.proposal_id,
         total_file=total_file,
@@ -62,6 +63,13 @@ async def upload_document_proposal(
                 file_name=rab_file_name,
                 encoding_base_64=rab_file_base64,
                 type="rab",
+                runtime_id=proposal_job.id,
+            ),
+            models.ProposalDocument(
+                proposal_id=dto.proposal_id,
+                file_name=sp_file_name,
+                encoding_base_64=sp_file_base64,
+                type="sp",
                 runtime_id=proposal_job.id,
             ),
         ]
@@ -551,3 +559,16 @@ async def get_proposal_verification(
     qProposal = select(models.Proposal).where(models.Proposal.id == proposal_id)
     rProposal = await session.execute(qProposal)
     return rProposal.scalars().first()
+
+
+async def get_proposal_document(
+    session: AsyncSession,
+    proposal_id: int,
+    type: str,
+) -> models.ProposalDocument:
+    qProposalDocument = select(models.ProposalDocument).where(
+        models.ProposalDocument.proposal_id == proposal_id,
+        models.ProposalDocument.type == type,
+    )
+    rProposalDocument = await session.execute(qProposalDocument)
+    return rProposalDocument.scalars().first()
