@@ -81,8 +81,11 @@ async def get_detail_proposal_verification(
     id: int,
     session: AsyncSession = Depends(get_session),
 ):
-    result = await proposal.get_proposal_verification(session, id)
-    return {"message": "Success", "data": result.proposal_verification}
+    result = await proposal.get_proposal_by_id(session, id)
+    return {
+        "message": "Success",
+        "data": result.proposal_verification if result else None,
+    }
 
 
 @router.get("/{id}/document")
@@ -122,3 +125,12 @@ async def get_detail_proposal_score_overlap(
 ):
     result = await proposal.get_proposal_score_overlap(session, id)
     return result
+
+
+@router.get("/{id}/summary")
+async def get_detail_proposal_summary(
+    id: int,
+    session: AsyncSession = Depends(get_session),
+):
+    result = await proposal.get_proposal_by_id(session, id)
+    return {"message": "Success", "data": result.summary if result else None}

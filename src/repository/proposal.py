@@ -552,7 +552,7 @@ async def get_list_proposal(session: AsyncSession) -> List[models.Proposal]:
     return rProposal.mappings().all()
 
 
-async def get_proposal_verification(
+async def get_proposal_by_id(
     session: AsyncSession,
     proposal_id: int,
 ) -> models.Proposal:
