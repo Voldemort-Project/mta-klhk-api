@@ -461,6 +461,7 @@ async def check_or_throw_error(
         propJob.status = "completed"
         propJob.completed_at = datetime.datetime.now()
         propJob.is_error = True
+        propJob.error_message = err if err else "Unknown error"
         session.add(propJob)
         await session.commit()
         await session.close()
