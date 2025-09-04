@@ -471,13 +471,19 @@ async def check_or_throw_error(
     return False
 
 
-async def get_proposal_job_stream(
-    session: AsyncSession, job_id: int
-) -> AsyncGenerator[str, None]:
+async def get_proposal_job(session: AsyncSession, job_id: int) -> models.ProposalJob:
     qProposalJob = select(models.ProposalJob).where(models.ProposalJob.id == job_id)
     rProposalJob = await session.execute(qProposalJob)
-    propJob = rProposalJob.scalars().first()
+    return rProposalJob.scalars().first()
+
+
+async def get_proposal_job_stream(
+    session: AsyncSession,
+    job_id: int,
+) -> AsyncGenerator[str, None]:
+    propJob = await get_proposal_job(session, job_id)
     while propJob.status != "completed":
+        propJob = await get_proposal_job(session, job_id)
         data = {
             "id": propJob.id,
             "status": propJob.status,
@@ -489,16 +495,21 @@ async def get_proposal_job_stream(
             "is_error": propJob.is_error,
         }
         yield f"data: {json.dumps(data)}\n\n"
+
+        await session.refresh(propJob)
+
+        if propJob.status == "completed":
+            data = {
+                "id": propJob.id,
+                "status": propJob.status,
+                "completed_at": propJob.completed_at.strftime("%Y-%m-%d %H:%M:%S"),
+                "total_file": propJob.total_file,
+                "total_uploaded_file": propJob.total_uploaded_file,
+                "total_failed_file": propJob.total_failed_file,
+                "error_message": propJob.error_message,
+                "is_error": propJob.is_error,
+            }
+            yield f"data: {json.dumps(data)}\n\n"
+            break
+
         await asyncio.sleep(1)
-        propJob = await session.refresh(propJob)
-    data = {
-        "id": propJob.id,
-        "status": propJob.status,
-        "completed_at": propJob.completed_at,
-        "total_file": propJob.total_file,
-        "total_uploaded_file": propJob.total_uploaded_file,
-        "total_failed_file": propJob.total_failed_file,
-        "error_message": propJob.error_message,
-        "is_error": propJob.is_error,
-    }
-    yield f"data: {json.dumps(data)}\n\n"
