@@ -133,6 +133,9 @@ class ProposalJob(Base):
     total_failed_file = Column(Integer, nullable=False, default=0)
     total_uploaded_file = Column(Integer, nullable=False, default=0)
     completed_at = Column(DateTime, nullable=True)
+    is_error = Column(Boolean, nullable=False, default=False)
+    error_message = Column(Text, nullable=True)
+
     proposal = relationship("Proposal", back_populates="proposal_job")
     proposal_document = relationship("ProposalDocument", back_populates="runtime")
 
@@ -152,6 +155,8 @@ class ProposalScoreOverlap(Base):
     total_budget = Column(Numeric, nullable=True)
     score = Column(Integer, nullable=True)
     reason = Column(Text, nullable=True)
+    rincian_output = Column(Text, nullable=True)
+
     proposal = relationship("Proposal", back_populates="proposal_score_overlap")
 
 

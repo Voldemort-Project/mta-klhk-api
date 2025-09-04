@@ -10,6 +10,7 @@ from fastapi import UploadFile
 from sqlalchemy.ext.asyncio import AsyncSession
 from app import models, schemas
 from app.config import settings
+from utils.clear import clear_markdown
 from utils.converter import string_to_float
 
 
@@ -170,7 +171,9 @@ async def background_process_job_agent(
             is_error_upload = True
         else:
             res_verification_json = res_verification.json()
-            proposal.proposal_verification = res_verification_json["result"]["data"]
+            proposal.proposal_verification = clear_markdown(
+                res_verification_json["result"]["data"]
+            )
 
         kak_base64 = [item for item in propDocs if item.type == "kak"][
             0
@@ -257,6 +260,7 @@ async def background_process_job_agent(
                     score=each["skor"],
                     total_budget=string_to_float(each["total_biaya"]),
                     reason=each["alasan"],
+                    rincian_output=each["rincian_output"],
                 )
                 proposalScoreOverlaps.append(p)
 
@@ -277,7 +281,7 @@ async def background_process_job_agent(
             is_error_upload = True
         else:
             res_proposal_summary_json = res_proposal_summary.json()
-            proposal.summary = res_proposal_summary_json["data"]
+            proposal.summary = clear_markdown(res_proposal_summary_json["data"])
 
         # Create Proposal Evaluation Letter
         body_evaluation_letter = create_body_proposal_evaluation_letter(proposal)
@@ -292,10 +296,13 @@ async def background_process_job_agent(
             is_error_upload = True
         else:
             res_evaluation_letter_json = res_evaluation_letter.json()
-            proposal.evaluasi_letter = res_evaluation_letter_json["data"]
+            proposal.evaluasi_letter = clear_markdown(
+                res_evaluation_letter_json["data"]
+            )
 
-    propJob.status = "completed" if not is_error_upload else "failed"
+    propJob.status = "completed"
     propJob.completed_at = datetime.datetime.now()
+    propJob.is_error = is_error_upload
 
     print(f"Proposal Job {propJob.status}")
 
@@ -398,8 +405,8 @@ def create_body_proposal_evaluation_letter(doc: models.Proposal) -> dict:
     return {
         "direktorat": doc.satuan_kerja,
         "rincian_output": doc.rincian_output,
-        "total_biaya": doc.anggaran,
+        "total_biaya": str(doc.anggaran),
         "summarizer_text": doc.summary,
-        "user_remarks": doc.note,
+        "user_remarks": doc.note if doc.note else "",
         "llm_config": get_llm_config(),
     }
