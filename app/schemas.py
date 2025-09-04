@@ -81,3 +81,13 @@ class ProposalListReadSchema(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class ProposalMapPriorityReadSchema(BaseModel):
+    id: int
+    label: str
+    score: int
+    reason: Optional[str]
+
+    class Config:
+        from_attributes = True

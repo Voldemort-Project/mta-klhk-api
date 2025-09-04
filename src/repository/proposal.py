@@ -572,3 +572,14 @@ async def get_proposal_document(
     )
     rProposalDocument = await session.execute(qProposalDocument)
     return rProposalDocument.scalars().first()
+
+
+async def get_proposal_map_priority(
+    session: AsyncSession,
+    proposal_id: int,
+) -> List[models.ProposalMapPriority]:
+    qProposalMapPriority = select(models.ProposalMapPriority).where(
+        models.ProposalMapPriority.proposal_id == proposal_id,
+    )
+    rProposalMapPriority = await session.execute(qProposalMapPriority)
+    return rProposalMapPriority.scalars().all()

@@ -98,3 +98,15 @@ async def get_detail_proposal_document(
         )
     result = await proposal.get_proposal_document(session, id, type)
     return {"message": "Success", "data": result.summary if result else None}
+
+
+@router.get(
+    "/{id}/map-priority",
+    response_model=List[schemas.ProposalMapPriorityReadSchema],
+)
+async def get_detail_proposal_map_priority(
+    id: int,
+    session: AsyncSession = Depends(get_session),
+):
+    result = await proposal.get_proposal_map_priority(session, id)
+    return result
