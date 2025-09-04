@@ -542,3 +542,12 @@ async def get_list_proposal(session: AsyncSession) -> List[models.Proposal]:
     )
     rProposal = await session.execute(qProposal)
     return rProposal.mappings().all()
+
+
+async def get_proposal_verification(
+    session: AsyncSession,
+    proposal_id: int,
+) -> models.Proposal:
+    qProposal = select(models.Proposal).where(models.Proposal.id == proposal_id)
+    rProposal = await session.execute(qProposal)
+    return rProposal.scalars().first()

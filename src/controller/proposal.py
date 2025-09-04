@@ -65,6 +65,10 @@ async def get_list_proposal(session: AsyncSession = Depends(get_session)):
     return proposals
 
 
-@router.get("/{id}")
-def get_detail_budget():
-    return {"message": "budget fetched"}
+@router.get("/{id}/verification")
+async def get_detail_proposal_verification(
+    id: int,
+    session: AsyncSession = Depends(get_session),
+):
+    result = await proposal.get_proposal_verification(session, id)
+    return {"message": "Success", "data": result.proposal_verification}
