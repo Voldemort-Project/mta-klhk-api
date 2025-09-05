@@ -82,6 +82,8 @@ class ProposalListReadSchema(BaseModel):
     jenis_belanja: str
     sub_jenis_belanja_id: int
     sub_jenis_belanja: str
+    kro_id: Optional[int]
+    kro_label: Optional[str]
     satuan_kerja: Optional[str]
     anggaran: Optional[float]
     status: str

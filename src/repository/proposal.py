@@ -535,10 +535,13 @@ async def get_list_proposal(session: AsyncSession) -> List[models.Proposal]:
             models.JenisBelanja.label.label("jenis_belanja"),
             models.Proposal.sub_jenis_belanja_id,
             models.SubJenisBelanja.label.label("sub_jenis_belanja"),
+            models.Proposal.kro_id,
+            models.Kro.description.label("kro_label"),
             models.Proposal.satuan_kerja,
             models.Proposal.anggaran,
             models.Proposal.status,
             models.Proposal.rincian_output,
+            models.Proposal.created_at,
         )
         .join(
             models.JenisBelanja,
@@ -547,6 +550,11 @@ async def get_list_proposal(session: AsyncSession) -> List[models.Proposal]:
         .join(
             models.SubJenisBelanja,
             models.SubJenisBelanja.id == models.Proposal.sub_jenis_belanja_id,
+        )
+        .join(
+            models.Kro,
+            models.Kro.id == models.Proposal.kro_id,
+            isouter=True,
         )
         .where(models.Proposal.user_id == USER_ID)
     )
