@@ -21,6 +21,7 @@ class SubJenisBelanjaReadOptionSchema(BaseModel):
 
 
 class ProposalCreateSchema(BaseModel):
+    kro_id: int
     jenis_belanja_id: int
     sub_jenis_belanja_id: int
 
@@ -85,6 +86,7 @@ class ProposalListReadSchema(BaseModel):
     anggaran: Optional[float]
     status: str
     rincian_output: Optional[str]
+    created_at: datetime.datetime
 
     class Config:
         from_attributes = True
@@ -107,6 +109,14 @@ class ProposalScoreOverlapReadSchema(BaseModel):
     score: Optional[int]
     reason: Optional[str]
     rincian_output: Optional[str]
+
+    class Config:
+        from_attributes = True
+
+
+class KroReadSchema(BaseModel):
+    id: int
+    description: Optional[str]
 
     class Config:
         from_attributes = True

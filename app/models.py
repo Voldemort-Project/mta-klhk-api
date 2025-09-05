@@ -69,6 +69,11 @@ class Proposal(Base):
     evaluasi_letter = Column(Text, nullable=True)
     rincian_output = Column(Text, nullable=True)
     note = Column(Text, nullable=True)
+    kro_id = Column(
+        Integer,
+        ForeignKey("kro.id", ondelete="CASCADE"),
+        nullable=True,
+    )
 
     jenis_belanja = relationship(
         "JenisBelanja",
@@ -88,6 +93,7 @@ class Proposal(Base):
         "ProposalMapPriority",
         back_populates="proposal",
     )
+    kro = relationship("Kro", back_populates="proposal")
 
 
 class ProposalDocument(Base):
@@ -175,3 +181,14 @@ class ProposalMapPriority(Base):
     score = Column(Integer, nullable=False)
     reason = Column(Text, nullable=True)
     proposal = relationship("Proposal", back_populates="proposal_map_priority")
+
+
+class Kro(Base):
+    __tablename__ = "kro"
+
+    id = Column(Integer, primary_key=True)
+    created_at = Column(DateTime, default=datetime.datetime.now)
+    updated_at = Column(DateTime, default=datetime.datetime.now)
+    description = Column(Text, nullable=True)
+
+    proposal = relationship("Proposal", back_populates="kro")

@@ -24,11 +24,13 @@ async def create_proposal(
 ) -> models.Proposal:
     new_proposal = models.Proposal(
         user_id=USER_ID,
+        kro_id=proposal.kro_id,
         jenis_belanja_id=proposal.jenis_belanja_id,
         sub_jenis_belanja_id=proposal.sub_jenis_belanja_id,
     )
     session.add(new_proposal)
     await session.commit()
+    await session.refresh(new_proposal)
     return new_proposal
 
 

@@ -2,6 +2,7 @@ from fastapi import APIRouter
 from src.controller.jenis_belanja import router as jenis_belanja_router
 from src.controller.proposal import router as proposal_router
 from src.controller.job import router as job_router
+from src.controller.kro import router as kro_router
 
 
 apirouter = APIRouter()
@@ -15,3 +16,4 @@ def ping():
 apirouter.include_router(jenis_belanja_router)
 apirouter.include_router(proposal_router)
 apirouter.include_router(job_router)
+apirouter.include_router(kro_router)
