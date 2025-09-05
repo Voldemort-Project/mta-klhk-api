@@ -1,4 +1,6 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+
+from src.middleware.auth_middlware import with_x_api_key
 from src.controller.jenis_belanja import router as jenis_belanja_router
 from src.controller.proposal import router as proposal_router
 from src.controller.job import router as job_router
@@ -13,7 +15,7 @@ def ping():
     return {"message": "pong"}
 
 
-apirouter.include_router(jenis_belanja_router)
-apirouter.include_router(proposal_router)
-apirouter.include_router(job_router)
-apirouter.include_router(kro_router)
+apirouter.include_router(jenis_belanja_router, dependencies=[Depends(with_x_api_key)])
+apirouter.include_router(proposal_router, dependencies=[Depends(with_x_api_key)])
+apirouter.include_router(job_router, dependencies=[Depends(with_x_api_key)])
+apirouter.include_router(kro_router, dependencies=[Depends(with_x_api_key)])
