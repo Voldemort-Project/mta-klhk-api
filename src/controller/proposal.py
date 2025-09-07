@@ -197,8 +197,8 @@ async def update_proposal_notes(
         raise HTTPException(status_code=500, detail=str(exc))
 
 
-@router.post("/{id}/approve")
-async def approve_proposal(
+@router.post("/{id}/status")
+async def update_proposal_status(
     id: int,
     input: schemas.ProposalUpdateSchema,
     session: AsyncSession = Depends(get_session),
