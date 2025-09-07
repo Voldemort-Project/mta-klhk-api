@@ -356,6 +356,7 @@ async def background_process_job_agent(
 
     propJob.status = "completed"
     propJob.completed_at = datetime.datetime.now()
+    proposal.status = "approved"
 
     print(f"Proposal Job {propJob.status}")
 
