@@ -356,7 +356,6 @@ async def background_process_job_agent(
 
     propJob.status = "completed"
     propJob.completed_at = datetime.datetime.now()
-    proposal.status = "approved"
 
     print(f"Proposal Job {propJob.status}")
 
@@ -617,7 +616,10 @@ async def update_proposal(
     input: schemas.ProposalUpdateSchema,
 ) -> models.Proposal:
     a = await get_proposal_by_id(session, id)
-    a.note = input.note
+    if input.status:
+        a.status = input.status
+    if input.note:
+        a.note = input.note
     session.add(a)
     await session.commit()
     await session.refresh(a)

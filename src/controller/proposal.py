@@ -195,3 +195,23 @@ async def update_proposal_notes(
         return {"message": "Success"}
     except Exception as exc:
         raise HTTPException(status_code=500, detail=str(exc))
+
+
+@router.post("/{id}/approve")
+async def approve_proposal(
+    id: int,
+    input: schemas.ProposalUpdateSchema,
+    session: AsyncSession = Depends(get_session),
+):
+    try:
+        await proposal.update_proposal(
+            session,
+            id,
+            schemas.ProposalUpdateSchema(status=input.status),
+        )
+        return {
+            "message": "Success update status proposal",
+            "data": {"id": id, "status": input.status},
+        }
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc))

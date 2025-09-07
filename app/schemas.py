@@ -31,6 +31,7 @@ class ProposalCreateSchema(BaseModel):
 
 class ProposalUpdateSchema(BaseModel):
     note: Optional[str]
+    status: Optional[str]
 
     class Config:
         from_attributes = True
