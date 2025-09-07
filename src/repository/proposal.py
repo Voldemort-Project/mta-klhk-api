@@ -356,6 +356,7 @@ async def background_process_job_agent(
 
     propJob.status = "completed"
     propJob.completed_at = datetime.datetime.now()
+    proposal.status = "approved"
 
     print(f"Proposal Job {propJob.status}")
 
@@ -557,6 +558,7 @@ async def get_list_proposal(session: AsyncSession) -> List[models.Proposal]:
             isouter=True,
         )
         .where(models.Proposal.user_id == USER_ID)
+        .order_by(models.Proposal.created_at.desc())
     )
     rProposal = await session.execute(qProposal)
     return rProposal.mappings().all()
