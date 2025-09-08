@@ -2,6 +2,7 @@ import uvicorn
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from src.middleware.logger_middleware import LoggingMiddleware
 from src.router.router import apirouter
 
 origins = [
@@ -11,6 +12,7 @@ origins = [
 
 
 app = FastAPI()
+app.add_middleware(LoggingMiddleware)
 
 app.add_middleware(
     CORSMiddleware,
