@@ -3,7 +3,6 @@ import asyncio
 import base64
 import datetime
 import json
-from re import A
 import httpx
 
 from sqlalchemy import select
@@ -174,7 +173,11 @@ async def background_process_job_agent(
         is_error_upload = propJob.total_failed_file > 0
 
         if await check_or_throw_error(
-            session, propJob, is_error_upload, "Error Upload Document"
+            session,
+            propJob,
+            proposal,
+            is_error_upload,
+            "Error Upload Document",
         ):
             return
 
@@ -197,7 +200,11 @@ async def background_process_job_agent(
             )
 
         if await check_or_throw_error(
-            session, propJob, is_error_upload, "Error Extract Verification Document"
+            session,
+            propJob,
+            proposal,
+            is_error_upload,
+            "Error Extract Verification Document",
         ):
             return
 
@@ -241,7 +248,11 @@ async def background_process_job_agent(
                 proposalMapPriorities.append(p)
 
         if await check_or_throw_error(
-            session, propJob, is_error_upload, "Error Extract Map Priority"
+            session,
+            propJob,
+            proposal,
+            is_error_upload,
+            "Error Extract Map Priority",
         ):
             return
 
@@ -270,7 +281,11 @@ async def background_process_job_agent(
                     proposal.anggaran = string_to_float(output["value"])
 
         if await check_or_throw_error(
-            session, propJob, is_error_upload, "Error Extract Extractor Proposal"
+            session,
+            propJob,
+            proposal,
+            is_error_upload,
+            "Error Extract Extractor Proposal",
         ):
             return
 
@@ -301,7 +316,11 @@ async def background_process_job_agent(
                 proposalScoreOverlaps.append(p)
 
         if await check_or_throw_error(
-            session, propJob, is_error_upload, "Error Extract Score Overlap"
+            session,
+            propJob,
+            proposal,
+            is_error_upload,
+            "Error Extract Score Overlap",
         ):
             return
 
@@ -325,7 +344,11 @@ async def background_process_job_agent(
             proposal.summary = clear_markdown(res_proposal_summary_json["data"])
 
         if await check_or_throw_error(
-            session, propJob, is_error_upload, "Error Extract Proposal Summary"
+            session,
+            propJob,
+            proposal,
+            is_error_upload,
+            "Error Extract Proposal Summary",
         ):
             return
 
@@ -349,6 +372,7 @@ async def background_process_job_agent(
         if await check_or_throw_error(
             session,
             propJob,
+            proposal,
             is_error_upload,
             "Error Extract Proposal Evaluation Letter",
         ):
@@ -467,6 +491,7 @@ def create_body_proposal_evaluation_letter(doc: models.Proposal) -> dict:
 async def check_or_throw_error(
     session: AsyncSession,
     propJob: models.ProposalJob,
+    proposal: models.Proposal,
     is_error: bool = False,
     err: Any = None,
 ) -> bool:
@@ -476,7 +501,9 @@ async def check_or_throw_error(
         propJob.completed_at = datetime.datetime.now()
         propJob.is_error = True
         propJob.error_message = err if err else "Unknown error"
+        proposal.status = "failed"
         session.add(propJob)
+        session.add(proposal)
         await session.commit()
         await session.close()
         return True
