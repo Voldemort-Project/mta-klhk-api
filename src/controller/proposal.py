@@ -56,6 +56,7 @@ async def upload_document_proposal(
     doc_supports: Optional[List[UploadFile]] = File([]),
     session: AsyncSession = Depends(get_session),
 ):
+    is_error = False
     try:
         dto = schemas.ProposalDocumentUploadSchema(
             proposal_id=proposal_id,
@@ -78,7 +79,15 @@ async def upload_document_proposal(
             "data": job.id,
         }
     except Exception as exc:
+        is_error = True
         raise HTTPException(status_code=500, detail=str(exc))
+    finally:
+        if not is_error:
+            await proposal.update_proposal(
+                session,
+                proposal_id,
+                schemas.ProposalUpdateSchema(runtime_id=job.id),
+            )
 
 
 @router.get("/", response_model=List[schemas.ProposalListReadSchema])

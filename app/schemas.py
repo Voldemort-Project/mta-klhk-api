@@ -32,6 +32,7 @@ class ProposalCreateSchema(BaseModel):
 class ProposalUpdateSchema(BaseModel):
     note: Optional[str] = None
     status: Optional[str] = None
+    runtime_id: Optional[int] = None
 
     class Config:
         from_attributes = True

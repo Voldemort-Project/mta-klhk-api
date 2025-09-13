@@ -665,6 +665,8 @@ async def update_proposal(
         a.status = input.status
     if input.note:
         a.note = input.note
+    if input.runtime_id:
+        a.runtime_id = input.runtime_id
     session.add(a)
     await session.commit()
     await session.refresh(a)
