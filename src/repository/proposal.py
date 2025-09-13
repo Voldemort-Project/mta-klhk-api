@@ -16,6 +16,13 @@ from src.constant.globals import USER_ID
 from utils.clear import clear_markdown
 from utils.converter import format_rupiah, string_to_float
 
+MAP_PRIORITY_FILE_NAME = {
+    "apr-spbe.md": "ARSITEKTUR DAN PETA RENCANA SPBE",
+    "renja.md": "RENCANA KERJA",
+    "renstra.md": "RENCANA STRATEGIS",
+    "tusi.md": "TUGAS DAN FUNGSI",
+}
+
 
 async def create_proposal(
     session: AsyncSession,
@@ -217,8 +224,8 @@ async def background_process_job_agent(
 
         # Get Proposal Map Priority
         proposalMapPriorities: List[models.ProposalMapPriority] = []
-        for file in ["rkp-lhk.md", "rkp-nasional.md", "rpjmn-lhk.md"]:
-            label = file.split(".")[0].upper()
+        for file in ["apr-spbe.md", "renja.md", "renstra.md", "tusi.md"]:
+            label = MAP_PRIORITY_FILE_NAME.get(file) if file else "UNKNOWN"
             print(f"Extract Map Priority {label}")
             body_map_priority = create_body_proposal_allignment(
                 file,
