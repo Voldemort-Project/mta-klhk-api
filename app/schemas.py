@@ -30,8 +30,8 @@ class ProposalCreateSchema(BaseModel):
 
 
 class ProposalUpdateSchema(BaseModel):
-    note: Optional[str]
-    status: Optional[str]
+    note: Optional[str] = None
+    status: Optional[str] = None
 
     class Config:
         from_attributes = True
@@ -120,6 +120,14 @@ class ProposalScoreOverlapReadSchema(BaseModel):
 class KroReadSchema(BaseModel):
     id: int
     description: Optional[str]
+
+    class Config:
+        from_attributes = True
+
+
+class ProposalDocumentRetrySchema(BaseModel):
+    proposal_id: int
+    runtime_id: int
 
     class Config:
         from_attributes = True

@@ -12,7 +12,7 @@ from fastapi import (
 from sqlalchemy.ext.asyncio import AsyncSession
 from app import schemas
 from app.db import get_session
-from src.repository import proposal
+from src.repository import proposal, proposal_job
 
 
 router = APIRouter(prefix="/proposal")
@@ -212,6 +212,40 @@ async def update_proposal_status(
         return {
             "message": "Success update status proposal",
             "data": {"id": id, "status": input.status},
+        }
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc))
+
+
+@router.post("/document/retry")
+async def retry_upload_document_proposal(
+    background_tasks: BackgroundTasks,
+    input: schemas.ProposalDocumentRetrySchema,
+    session: AsyncSession = Depends(get_session),
+):
+    try:
+        pj = await proposal_job.get_proposal_job_by_id(session, input.runtime_id)
+        if not pj:
+            raise HTTPException(status_code=404, detail="Proposal job not found")
+        await proposal_job.update_status_retry_proposal_job(
+            session,
+            input.runtime_id,
+            "queue",
+        )
+        await proposal.update_proposal(
+            session,
+            input.proposal_id,
+            schemas.ProposalUpdateSchema(status="retry"),
+        )
+        background_tasks.add_task(
+            background_process_job,
+            session,
+            input.runtime_id,
+            input.proposal_id,
+        )
+        return {
+            "message": "Retry upload document proposal in progress",
+            "data": input.runtime_id,
         }
     except Exception as exc:
         raise HTTPException(status_code=500, detail=str(exc))
