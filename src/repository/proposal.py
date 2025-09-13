@@ -312,6 +312,7 @@ async def background_process_job_agent(
                     total_budget=string_to_float(each["total_biaya"]),
                     reason=each["alasan"],
                     rincian_output=each["rincian_output"],
+                    encoding_base_64=each["db_base64_rab"],
                 )
                 proposalScoreOverlaps.append(p)
 
@@ -325,6 +326,9 @@ async def background_process_job_agent(
             return
 
         # Create Proposal Summary
+        for each in res_score_overlap_data:
+            if each.get("db_base64_rab"):
+                each.pop("db_base64_rab", None)
         body_proposal_summary = create_body_proposal_summary(
             proposal_verification_response=proposal.proposal_verification,
             proposal_allignment_response=proposal_allignment_response,

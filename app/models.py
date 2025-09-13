@@ -175,6 +175,7 @@ class ProposalScoreOverlap(Base):
     score = Column(Integer, nullable=True)
     reason = Column(Text, nullable=True)
     rincian_output = Column(Text, nullable=True)
+    encoding_base_64 = Column(Text, nullable=True)
 
     proposal = relationship("Proposal", back_populates="proposal_score_overlap")
 
