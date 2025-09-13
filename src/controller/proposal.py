@@ -283,3 +283,15 @@ async def download_document_proposal(
         )
     except Exception as exc:
         raise HTTPException(status_code=500, detail=str(exc))
+
+
+@router.get("/{id}", response_model=schemas.ProposalListReadSchema)
+async def get_proposal_by_id(
+    id: int,
+    session: AsyncSession = Depends(get_session),
+):
+    try:
+        pr = await proposal.get_proposal_detail_by_id(session, id)
+        return pr
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc))

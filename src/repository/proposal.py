@@ -669,3 +669,46 @@ async def update_proposal(
     await session.commit()
     await session.refresh(a)
     return a
+
+
+async def get_proposal_detail_by_id(session: AsyncSession, id: int) -> models.Proposal:
+    qProposal = (
+        select(
+            models.Proposal.id,
+            models.Proposal.user_id,
+            models.Proposal.jenis_belanja_id,
+            models.JenisBelanja.label.label("jenis_belanja"),
+            models.Proposal.sub_jenis_belanja_id,
+            models.SubJenisBelanja.label.label("sub_jenis_belanja"),
+            models.Proposal.kro_id,
+            models.Kro.description.label("kro_label"),
+            models.Proposal.satuan_kerja,
+            models.Proposal.anggaran,
+            models.Proposal.status,
+            models.Proposal.rincian_output,
+            models.Proposal.created_at,
+            models.ProposalJob.id.label("runtime_id"),
+        )
+        .join(
+            models.JenisBelanja,
+            models.JenisBelanja.id == models.Proposal.jenis_belanja_id,
+        )
+        .join(
+            models.SubJenisBelanja,
+            models.SubJenisBelanja.id == models.Proposal.sub_jenis_belanja_id,
+        )
+        .join(
+            models.Kro,
+            models.Kro.id == models.Proposal.kro_id,
+            isouter=True,
+        )
+        .join(
+            models.ProposalJob,
+            models.ProposalJob.proposal_id == models.Proposal.id,
+            isouter=True,
+        )
+        .where(models.Proposal.id == id)
+        .order_by(models.Proposal.created_at.desc())
+    )
+    rProposal = await session.execute(qProposal)
+    return rProposal.mappings().first()
