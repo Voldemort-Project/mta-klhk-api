@@ -74,6 +74,11 @@ class Proposal(Base):
         ForeignKey("kro.id", ondelete="CASCADE"),
         nullable=True,
     )
+    runtime_id = Column(
+        Integer,
+        ForeignKey("proposal_job.id", ondelete="CASCADE"),
+        nullable=True,
+    )
 
     jenis_belanja = relationship(
         "JenisBelanja",
@@ -84,7 +89,11 @@ class Proposal(Base):
         back_populates="proposal",
     )
     proposal_document = relationship("ProposalDocument", back_populates="proposal")
-    proposal_job = relationship("ProposalJob", back_populates="proposal")
+    proposal_job = relationship(
+        "ProposalJob",
+        back_populates="proposal",
+        foreign_keys="[ProposalJob.proposal_id]",
+    )
     proposal_score_overlap = relationship(
         "ProposalScoreOverlap",
         back_populates="proposal",
@@ -142,7 +151,11 @@ class ProposalJob(Base):
     is_error = Column(Boolean, nullable=False, default=False)
     error_message = Column(Text, nullable=True)
 
-    proposal = relationship("Proposal", back_populates="proposal_job")
+    proposal = relationship(
+        "Proposal",
+        back_populates="proposal_job",
+        foreign_keys=[proposal_id],
+    )
     proposal_document = relationship("ProposalDocument", back_populates="runtime")
 
 

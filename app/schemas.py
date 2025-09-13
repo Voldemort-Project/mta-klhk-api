@@ -90,6 +90,7 @@ class ProposalListReadSchema(BaseModel):
     status: str
     rincian_output: Optional[str]
     created_at: datetime.datetime
+    runtime_id: Optional[int]
 
     class Config:
         from_attributes = True

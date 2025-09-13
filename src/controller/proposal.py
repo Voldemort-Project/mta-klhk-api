@@ -12,7 +12,9 @@ from fastapi import (
 from sqlalchemy.ext.asyncio import AsyncSession
 from app import schemas
 from app.db import get_session
-from src.repository import proposal, proposal_job
+from src.repository import proposal, proposal_job, proposal_document
+from utils import file as utils_file
+from fastapi.responses import StreamingResponse
 
 
 router = APIRouter(prefix="/proposal")
@@ -247,5 +249,37 @@ async def retry_upload_document_proposal(
             "message": "Retry upload document proposal in progress",
             "data": input.runtime_id,
         }
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc))
+
+
+@router.get("/{id}/document/download")
+async def download_document_proposal(
+    id: int,
+    type: str = Query(...),
+    session: AsyncSession = Depends(get_session),
+):
+    try:
+        if type not in ["rab", "overlap"]:
+            raise HTTPException(
+                status_code=400,
+                detail="Invalid type. Should be rab",
+            )
+        doc = await proposal_document.get_proposal_document_by_proposal_id_and_type(
+            session,
+            id,
+            type,
+        )
+        if not doc:
+            raise HTTPException(status_code=404, detail="Document not found")
+        file_io = utils_file.decoding_file(doc.encoding_base_64)
+
+        return StreamingResponse(
+            file_io,
+            media_type="application/pdf",
+            headers={
+                "Content-Disposition": f"attachment; filename={doc.file_name}",
+            },
+        )
     except Exception as exc:
         raise HTTPException(status_code=500, detail=str(exc))

@@ -570,6 +570,7 @@ async def get_list_proposal(session: AsyncSession) -> List[models.Proposal]:
             models.Proposal.status,
             models.Proposal.rincian_output,
             models.Proposal.created_at,
+            models.ProposalJob.id.label("runtime_id"),
         )
         .join(
             models.JenisBelanja,
@@ -582,6 +583,11 @@ async def get_list_proposal(session: AsyncSession) -> List[models.Proposal]:
         .join(
             models.Kro,
             models.Kro.id == models.Proposal.kro_id,
+            isouter=True,
+        )
+        .join(
+            models.ProposalJob,
+            models.ProposalJob.proposal_id == models.Proposal.id,
             isouter=True,
         )
         .where(models.Proposal.user_id == USER_ID)
