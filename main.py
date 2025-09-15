@@ -7,6 +7,7 @@ from src.router.router import apirouter
 
 origins = [
     "https://klhk-budget-preclearance.vercel.app",
+    "https://kemenhut-budget-preclearance.vercel.app",
     "http://localhost:8080",
 ]
 
