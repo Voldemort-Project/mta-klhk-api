@@ -269,10 +269,10 @@ async def download_document_proposal(
     session: AsyncSession = Depends(get_session),
 ):
     try:
-        if type not in ["rab", "overlap"]:
+        if type not in ["rab", "kak"]:
             raise HTTPException(
                 status_code=400,
-                detail="Invalid type. Should be rab",
+                detail="Invalid type. Should be rab or kak",
             )
         doc = await proposal_document.get_proposal_document_by_proposal_id_and_type(
             session,
