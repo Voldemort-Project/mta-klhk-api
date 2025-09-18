@@ -19,10 +19,9 @@ async def get_proposal_overlap(
     try:
         ps = await proposal_overlap.get_proposal_overlap_by_id(session, id)
         if not ps:
-            raise HTTPException(
-                status_code=404,
-                detail="Proposal overlap file not found",
-            )
+            raise FileNotFoundError("Proposal overlap file not found")
+        if not ps.encoding_base_64:
+            raise FileNotFoundError("Proposal doesn't have RAB file")
         file_io = decoding_file(ps.encoding_base_64)
 
         return StreamingResponse(
@@ -32,5 +31,7 @@ async def get_proposal_overlap(
                 "Content-Disposition": f"attachment; filename={ps.rincian_output}.pdf",
             },
         )
+    except FileNotFoundError as e:
+        raise HTTPException(status_code=404, detail=str(e))
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise e
