@@ -153,7 +153,7 @@ async def background_process_job_agent(
         "X-API-Key": settings.agent_api_key,
     }
 
-    async with httpx.AsyncClient(timeout=1800) as client:
+    async with httpx.AsyncClient(timeout=240) as client:
         for doc in propDocs:
             bodySummary = create_body_proposal_doc_summary(doc)
             print(f"Extract Summary {doc.file_name}")
