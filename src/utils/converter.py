@@ -50,11 +50,11 @@ def _force_bullets(html: str) -> str:
     style = soup.new_tag("style")
     style.string = """
     .list-ul, .list-ol { margin: 0 0 2pt 0; }
-    .list-ul .li, .list-ol .li { position: relative; margin: 0 0 0pt 18pt; }
+    .list-ul .li, .list-ol .li { position: relative; margin: 0 0 0pt 18px; }
     .list-ul .li .bullet, .list-ol .li .bullet {
         position: absolute; left: -14pt; top: 0; width: 12pt; display: inline-block;
     }
-    .list-ul .li .txt, .list-ol .li .txt { display: inline; }
+    .list-ul .li .txt, .list-ol .li .txt { display: inline; font-size: 11px; }
     """
     # taruh di head (atau prepend ke body jika tidak ada head)
     if soup.head:
@@ -72,8 +72,8 @@ def md_to_pdf_xhtml2pdf(
     force_bullets: bool = True,
 ) -> BytesIO:
     ROOT_DIR = Path(__file__).resolve().parent.parent.parent
-    kop_path = ROOT_DIR / "assets" / "kop_surat.png"
-    watermark_path = ROOT_DIR / "assets" / "logo-simpatik-3.png"
+    kop_path = ROOT_DIR / "assets" / "kop_surat_2.png"
+    watermark_path = ROOT_DIR / "assets" / "logo-simpatik-6.png"
     body_html = markdown(
         md_text, extensions=["extra", "sane_lists"], output_format="html5"
     )
@@ -89,7 +89,7 @@ def md_to_pdf_xhtml2pdf(
     if force_bullets:
         final_html = _force_bullets(final_html)
 
-    Path("debug_after_force.html").write_text(final_html, encoding="utf-8")
+    # Path("debug_after_force.html").write_text(final_html, encoding="utf-8")
 
     pdf_bytes = BytesIO()
     result = pisa.CreatePDF(src=final_html, dest=pdf_bytes, encoding="utf-8")

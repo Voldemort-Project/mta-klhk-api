@@ -8,19 +8,19 @@
     /* @page: hanya size & margin sederhana */
     @page {
       size: A4;
-      margin: 4mm 15mm 15mm 18mm;
+      margin: 4mm 15mm 8mm 15mm;
       background: url("{{ watermark_src }}") no-repeat center center;
       background-size: 10%;
 
       /* kalau engine support, bisa begini */
-      background-position: 10% 55%; /* geser lebih ke bawah */
+      background-position: 50% 50%; /* geser lebih ke bawah */
     }
 
     body {
       /* Gunakan font built-in ReportLab agar aman */
       font-family: Arial, sans-serif;
-      font-size: 11px;
-      line-height: 1.2;
+      font-size: 12px;
+      line-height: 1.25;
       color: #111111;
       position: relative;
       z-index: 1;
@@ -33,6 +33,10 @@
 
     p, ul, ol, table {
       margin: 10px 0 8px 0;
+    }
+
+    table {
+      margin-bottom: 0;
     }
 
     table {
@@ -74,6 +78,10 @@
       width: 100%;            /* skala aman melebar */
       max-width: 520pt;       /* muat dalam A4 – margin (kira-kira) */
       height: auto;           /* pertahankan rasio */
+    }
+
+    h2 {
+      font-size: 14px;;
     }
 
     /* Hindari box-sizing, counter(), margin boxes, position: fixed, dsb. */

@@ -1,3 +1,4 @@
+import base64
 from typing import List, Optional
 from fastapi import (
     APIRouter,
@@ -314,14 +315,14 @@ async def download_detail_evaluation_letter(
     try:
         result = await proposal.get_proposal_by_id(session, id)
         sample_md = r"""
-## Berita Acara Hasil Evaluasi Proposal
+## BERITA ACARA HASIL EVALUASI PROPOSAL
 
 Nomor: KM/2025/BA/SPBE/1
 
 <table>
     <tr>
         <td style="width: 30%;">Judul Proposal</td>
-        <td>: Data dan Peta Kondisi Sumber Daya Hutan dan Kawasan Hutan</td>
+        <td>: Data dan Informasi Analisis Pemantauan Sumber Daya Hutan</td>
     </tr>
     <tr>
         <td style="width: 30%;">Pengusul</td>
@@ -329,7 +330,7 @@ Nomor: KM/2025/BA/SPBE/1
     </tr>
     <tr>
         <td style="width: 30%;">Estimasi Biaya</td>
-        <td>: Rp. 950.000.000</td>
+        <td>: Rp. 275000000.0</td>
     </tr>
     <tr>
         <td style="width: 30%;">Tanggal Pengajuan</td>
@@ -342,15 +343,17 @@ Evaluasi ini dilakukan untuk memastikan kesesuaian proposal dengan SOP Budget Cl
 
 Ringkasan Kajian adalah sebagai berikut:
 
-1. Proposal yang diajukan oleh Direktorat Inventarisasi dan Pemantauan Sumber Daya Hutan dengan judul "Data dan Peta Kondisi Sumber Daya Hutan dan Kawasan Hutan" dinilai relevan dengan KRO Belanja Data (BMA/QMA).
-2. Penilaian oleh *assessor* menunjukkan keselarasan yang kuat (skor 85) dengan agenda strategis Kementerian LHK, terutama dalam Tata Ruang dan Pengelolaan Wilayah, serta Pemanfaatan IPTEK dan Peningkatan SDM LHK. Proposal ini mendukung inventarisasi dan pemantauan sumber daya hutan.
-3. Proposal belum menyertakan dokumen pendukung yang dipersyaratkan seperti Kerangka Acuan Kerja (KAK) yang lengkap, Dokumen Arsitektur SPBE Domain Data dan Informasi, Rujukan regulasi dalam melakukan Kegiatan Pendataan minimum Data prioritas, Surat Rekomendasi BPS (jika relevan), dan Daftar Data (Formulir isian daftar data).
-4. Terdapat potensi tumpang tindih dengan program pemantauan SDH (skor 35 dan 60), khususnya dalam penggunaan data citra satelit untuk memantau sumber daya hutan yang memerlukan peninjauan lebih lanjut.
+1.  Proposal dengan judul "Data dan Informasi Analisis Pemantauan Sumber Daya Hutan" yang diajukan oleh Direktorat Inventarisasi dan Pemantauan Sumber Daya Hutan dengan estimasi biaya Rp. 275.000.000,- telah dievaluasi.
+2.  Secara umum, proposal telah melampirkan dokumen KAK dan RAB, serta dinilai selaras dengan tujuan strategis Direktorat Inventarisasi dan Pemantauan Sumber Daya Hutan. KAK mencakup detail seperti Latar Belakang, Maksud dan Tujuan, Sasaran, Penerima Manfaat, Lokasi Kegiatan, Ruang Lingkup, Tahapan dan Waktu Pelaksanaan, Analisis Biaya, serta Rencana Anggaran Biaya.
+3.  Ditemukan beberapa ketidaksesuaian dan area yang memerlukan perbaikan, antara lain: KRO tidak sesuai dengan standar (kode KRO BMA), tidak melampirkan Dokumen Arsitektur SPBE Domain Data dan Informasi, tidak melampirkan Surat Rekomendasi BPS (jika relevan), isian detail KAK (Spesifikasi Teknis, Model Aplikasi/Infrastruktur/Data, Keluaran, Tenaga Ahli, Peralatan Pendukung) tidak lengkap, dan ketidaksesuaian dengan standar "Terlayani, Terintegrasi, Terkendali, dan Transparan".
+4.  Teridentifikasi potensi tumpang tindih signifikan dengan program "Data dan Informasi Deforestasi Indonesia" (skor 75), "Data dan Informasi Areal Indikatif Penghentian Pemberian Perizinan Berusaha" (skor 80), dan "Layanan Informasi Geospasial" (skor 75), terutama dalam tujuan strategis dan cakupan wilayah (Inventarisasi Sumber Daya Hutan). Perlu justifikasi atau diferensiasi lebih lanjut.
 
 Adapun kesimpulan dan catatan khusus yang menjadi prioritas dalam pertimbangan ini adalah:
 
-**Proposal ini harus diterima karena sangat sesuai dengan rencana kerja pemerintahan jangka panjang.** Meskipun terdapat kekurangan dalam kelengkapan dokumen dan potensi tumpang tindih, manfaat jangka panjang dari proposal ini sangat signifikan.
-
+Tidak ada catatan khusus. Perlu dilakukan perbaikan dan penyesuaian berdasarkan temuan evaluasi sebelum proposal dapat dilanjutkan.
+<div>
+    <div class="spacer">&nbsp;</div>
+</div>
 Demikian Berita Acara Hasil Evaluasi Proposal ini kami sampaikan untuk menjadi perhatian dan tindak lanjut sebagaimana mestinya.
 
 ---
@@ -363,7 +366,7 @@ Mengetahui,
   <tr>
     <td>
         <div class="sig-head">Kepala Biro Sumber Daya Manusia dan Organisasi</div>
-        <span class="ttd-space"><br><br></span>
+        <div class="ttd-space">&nbsp;</div>
         <div class="sig">
             <span class="nama">Dedy Asriady, S.Si., M.P.</span>
             <span class="nip">NIP. 197408182000031001</span>
@@ -371,7 +374,7 @@ Mengetahui,
     </td>
     <td>
         <div class="sig-head">Direktur Inventarisasi dan Pemantauan Sumber Daya Hutan</div>
-        <span class="ttd-space"><br><br></span>
+        <div class="ttd-space">&nbsp;</div>
         <div class="sig">
             <span class="nama">Dr. R Agus Budi Santosa, S.Hut, M.T.</span>
             <span class="nip">NIP. 196809201998031003</span>
@@ -382,7 +385,7 @@ Mengetahui,
   <tr>
     <td>
         <div class="sig-head">Kepala Pusat Data dan Informasi</div>
-        <span class="ttd-space"><br><br></span>
+        <div class="ttd-space">&nbsp;</div>
         <div class="sig">
             <span class="nama">Dr. Ishak Yassir, S.Hut., M.Si.</span>
             <span class="nip">NIP. 197305222000031003</span>
@@ -390,7 +393,7 @@ Mengetahui,
     </td>
     <td>
         <div class="sig-head">Kepala Biro Perencanaan</div>
-        <span class="ttd-space"><br><br></span>
+        <div class="ttd-space">&nbsp;</div>
         <div class="sig">
             <span class="nama">Dr. Edi Sulistyo Heri Susetyo, S.Hut., M.Si.</span>
             <span class="nip">NIP. 197012062000031004</span>
@@ -398,24 +401,31 @@ Mengetahui,
     </td>
   </tr>
 </table>
-
 """
+        decoded_value = None
+        try:
+            decoded_value = base64.b64decode(result.evaluasi_letter.encode("utf-8")).decode("utf-8")
+        except Exception:
+            decoded_value = result.evaluasi_letter
+
         pdf_stream = md_to_pdf_xhtml2pdf(
-            result.evaluasi_letter,
+            decoded_value,
             title="Berita Acara Hasil Evaluasi Proposal",
             extra_css="""
                 /* xhtml2pdf mendukung CSS dasar */
-                .ttd-space { display:block; height:54pt; }
+                .ttd-space { display:block; margin: 10px 0; }
                 .sig-head { font-size: 12px; text-align:center; font-weight: bold}
                 .sig { line-height:1; text-align:center; }
                 .sig .nama, .sig .nip, .sig .jabatan {
                     display:block;
                     margin:0;
                     padding:0;
-                    }
+                }
                 .sig .nama   { font-size: 11px; font-weight: bold; margin:0; padding:0;}
                 .sig .nip     { font-size:11px; color:#333; margin-top:2pt; margin:0; padding:0;}
                 .sig .jabatan { font-size:11px; margin-top:2pt; margin:0; padding:0;}
+
+                .spacer {display:block; margin: 6px 0;}
 
                 /* Opsional: rapatkan sedikit antar-baris */
                 /* .sig .nama   { margin-top: 2px; }   */

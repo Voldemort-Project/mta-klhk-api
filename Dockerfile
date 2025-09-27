@@ -16,6 +16,14 @@ COPY uv.lock ./
 # Install uv first
 RUN pip install --no-cache-dir uv
 
+# Install build dependencies for pycairo
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    build-essential \
+    pkg-config \
+    libcairo2-dev && \
+    rm -rf /var/lib/apt/lists/*
+
 # Install Python dependencies
 RUN uv pip install --system -e .
 

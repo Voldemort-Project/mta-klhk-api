@@ -5,9 +5,9 @@ import datetime
 import json
 import httpx
 
-from sqlalchemy import select
+from sqlalchemy import select, text
 from sqlalchemy.orm import joinedload
-from typing import Any, AsyncGenerator, List, Tuple
+from typing import Any, AsyncGenerator, List, Optional, Tuple
 from fastapi import UploadFile
 from sqlalchemy.ext.asyncio import AsyncSession
 from app import models, schemas
@@ -376,8 +376,10 @@ async def background_process_job_agent(
             is_error_upload = True
         else:
             res_evaluation_letter_json = res_evaluation_letter.json()
+            evaluation_letter = res_evaluation_letter_json["data"]
+            value = base64.b64encode(evaluation_letter.encode("utf-8")).decode("utf-8")
             proposal.evaluasi_letter = clear_markdown(
-                res_evaluation_letter_json["data"]
+                value
             )
 
         if await check_or_throw_error(
@@ -714,3 +716,14 @@ async def get_proposal_detail_by_id(session: AsyncSession, id: int) -> models.Pr
     )
     rProposal = await session.execute(qProposal)
     return rProposal.mappings().first()
+
+async def get_proposal_evaluation_letter_by_id(session: AsyncSession, id: int) -> Optional[str]:
+    raw_query = text("""
+        select
+            evaluasi_letter
+        from proposal
+        where id = :id
+    """)
+    rProposal = await session.execute(raw_query, {"id": id})
+    result = rProposal.mappings().first()
+    return result["evaluasi_letter"] if result["evaluasi_letter"] else None
