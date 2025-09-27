@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<title>Berita Acara Hasil Evaluasi Proposal</title>
+<style>
+    /* xhtml2pdf: gunakan CSS sederhana saja */
+    /* @page: hanya size & margin sederhana */
+    @page {
+      size: A4;
+      margin: 4mm 15mm 15mm 18mm;
+      background: url("/Users/a666hn/Projects/mta/api-service/assets/logo-simpatik-3.png") no-repeat center center;
+      background-size: 10%;
+
+      /* kalau engine support, bisa begini */
+      background-position: 10% 55%; /* geser lebih ke bawah */
+    }
+
+    body {
+      /* Gunakan font built-in ReportLab agar aman */
+      font-family: Arial, sans-serif;
+      font-size: 11px;
+      line-height: 1.2;
+      color: #111111;
+      position: relative;
+      z-index: 1;
+    }
+
+    h1, h2, h3 {
+      margin: 10px 0 6px 0;
+    }
+    h1 { font-size: 18px; text-align: center; }
+
+    p, ul, ol, table {
+      margin: 10px 0 8px 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    td, th {
+      vertical-align: top;
+      padding: 0px 20px;
+      /* Hindari border CSS berat; boleh, tapi jangan style kompleks */
+    }
+    .rowspacer td {
+      height: 30px;       /* <— set the gap you want */
+      padding: 0;
+      font-size: 0;      /* avoid extra height from text */
+      line-height: 0;
+    }
+
+    ul{
+      list-style-type: disc;
+      list-style-position: outside;
+      margin: 0 0 10pt 0;   /* <- nolkan margin kiri */
+      padding-left: 18pt;   /* <- indent pakai padding */
+    }
+    ol{
+      list-style-type: decimal;
+      list-style-position: outside;
+      margin: 0 0 10pt 0;   /* <- nolkan margin kiri */
+      padding-left: 18pt;   /* <- indent pakai padding */
+    }
+    li{
+      display: list-item;
+      margin: 0 0 4pt 0;
+      text-indent: 0;
+    }
+    .kop-surat{
+      display: block;         /* penting untuk centering */
+      margin: 0 0 0 0pt;    /* center + jarak bawah */
+      width: 100%;            /* skala aman melebar */
+      max-width: 520pt;       /* muat dalam A4 – margin (kira-kira) */
+      height: auto;           /* pertahankan rasio */
+    }
+
+    /* Hindari box-sizing, counter(), margin boxes, position: fixed, dsb. */
+  </style>
+<style>
+    /* Pastikan extra_css juga sederhana */
+    
+                /* xhtml2pdf mendukung CSS dasar */
+                .ttd-space { display:block; height:54pt; }
+                .sig-head { font-size: 12px; text-align:center; font-weight: bold}
+                .sig { line-height:1; text-align:center; }
+                .sig .nama, .sig .nip, .sig .jabatan {
+                    display:block;
+                    margin:0;
+                    padding:0;
+                    }
+                .sig .nama   { font-size: 11px; font-weight: bold; margin:0; padding:0;}
+                .sig .nip     { font-size:11px; color:#333; margin-top:2pt; margin:0; padding:0;}
+                .sig .jabatan { font-size:11px; margin-top:2pt; margin:0; padding:0;}
+
+                /* Opsional: rapatkan sedikit antar-baris */
+                /* .sig .nama   { margin-top: 2px; }   */
+                /* @page margin via pisaPageSize kurang konsisten; pakai margin di body atau table spacing */
+                
+  </style>
+<style>
+    .list-ul, .list-ol { margin: 0 0 2pt 0; }
+    .list-ul .li, .list-ol .li { position: relative; margin: 0 0 0pt 18pt; }
+    .list-ul .li .bullet, .list-ol .li .bullet {
+        position: absolute; left: -14pt; top: 0; width: 12pt; display: inline-block;
+    }
+    .list-ul .li .txt, .list-ol .li .txt { display: inline; }
+    </style></head>
+<body>
+<!-- <pdf:background>
+    <pdf:overlay align="center" valign="middle">
+      <img src="/Users/a666hn/Projects/mta/api-service/assets/logo-simpatik-3.png" width="400" height="400" />
+    </pdf:overlay>
+  </pdf:background> -->
+<!-- <div style="width:0; height:0; overflow:hidden;">
+    <pdf:pageTemplate id="wm">
+      <pdf:frame x="18mm" y="15mm" width="174mm" height="267mm"/>
+      <pdf:background>
+        <img src="/Users/a666hn/Projects/mta/api-service/assets/logo-simpatik-3.png" width="595" height="842" />
+      </pdf:background>
+    </pdf:pageTemplate>
+    <pdf:nextPageTemplate name="wm"/>
+  </div> -->
+<img alt="Kop Surat" class="kop-surat" src="/Users/a666hn/Projects/mta/api-service/assets/kop_surat.png"/>
+<h2>Berita Acara Hasil Evaluasi Proposal</h2>
+<p>Nomor: KM/2025/BA/SPBE/1</p>
+<table>
+<tr>
+<td style="width: 30%;">Judul Proposal</td>
+<td>: Data dan Peta Kondisi Sumber Daya Hutan dan Kawasan Hutan</td>
+</tr>
+<tr>
+<td style="width: 30%;">Pengusul</td>
+<td>: Direktorat Inventarisasi dan Pemantauan Sumber Daya Hutan</td>
+</tr>
+<tr>
+<td style="width: 30%;">Estimasi Biaya</td>
+<td>: Rp. 950.000.000</td>
+</tr>
+<tr>
+<td style="width: 30%;">Tanggal Pengajuan</td>
+<td>: 27 September 2025</td>
+</tr>
+</table>
+<p>Evaluasi ini dilakukan untuk memastikan kesesuaian proposal dengan SOP Budget Clearance, kelengkapan dokumen, keselarasan rencana dan tugas fungsi serta menghindari potensi tumpang tindih dengan kegiatan lainnya.</p>
+<p>Ringkasan Kajian adalah sebagai berikut:</p>
+<div class="list-ol"><div class="li"><span class="bullet">•  </span><span class="txt">Proposal yang diajukan oleh Direktorat Inventarisasi dan Pemantauan Sumber Daya Hutan dengan judul "Data dan Peta Kondisi Sumber Daya Hutan dan Kawasan Hutan" dinilai relevan dengan KRO Belanja Data (BMA/QMA).</span></div><div class="li"><span class="bullet">•  </span><span class="txt">Penilaian oleh <em>assessor</em> menunjukkan keselarasan yang kuat (skor 85) dengan agenda strategis Kementerian LHK, terutama dalam Tata Ruang dan Pengelolaan Wilayah, serta Pemanfaatan IPTEK dan Peningkatan SDM LHK. Proposal ini mendukung inventarisasi dan pemantauan sumber daya hutan.</span></div><div class="li"><span class="bullet">•  </span><span class="txt">Proposal belum menyertakan dokumen pendukung yang dipersyaratkan seperti Kerangka Acuan Kerja (KAK) yang lengkap, Dokumen Arsitektur SPBE Domain Data dan Informasi, Rujukan regulasi dalam melakukan Kegiatan Pendataan minimum Data prioritas, Surat Rekomendasi BPS (jika relevan), dan Daftar Data (Formulir isian daftar data).</span></div><div class="li"><span class="bullet">•  </span><span class="txt">Terdapat potensi tumpang tindih dengan program pemantauan SDH (skor 35 dan 60), khususnya dalam penggunaan data citra satelit untuk memantau sumber daya hutan yang memerlukan peninjauan lebih lanjut.</span></div></div>
+<p>Adapun kesimpulan dan catatan khusus yang menjadi prioritas dalam pertimbangan ini adalah:</p>
+<p><strong>Proposal ini harus diterima karena sangat sesuai dengan rencana kerja pemerintahan jangka panjang.</strong> Meskipun terdapat kekurangan dalam kelengkapan dokumen dan potensi tumpang tindih, manfaat jangka panjang dari proposal ini sangat signifikan.</p>
+<p>Demikian Berita Acara Hasil Evaluasi Proposal ini kami sampaikan untuk menjadi perhatian dan tindak lanjut sebagaimana mestinya.</p>
+<hr/>
+<p>Jakarta, 27 September 2025</p>
+<p>Mengetahui,</p>
+<table border="0" cellpadding="6" cellspacing="0" style="width:100%; text-align:center; ">
+<tr>
+<td>
+<div class="sig-head">Kepala Biro Sumber Daya Manusia dan Organisasi</div>
+<span class="ttd-space"><br/><br/></span>
+<div class="sig">
+<span class="nama">Dedy Asriady, S.Si., M.P.</span>
+<span class="nip">NIP. 197408182000031001</span>
+</div>
+</td>
+<td>
+<div class="sig-head">Direktur Inventarisasi dan Pemantauan Sumber Daya Hutan</div>
+<span class="ttd-space"><br/><br/></span>
+<div class="sig">
+<span class="nama">Dr. R Agus Budi Santosa, S.Hut, M.T.</span>
+<span class="nip">NIP. 196809201998031003</span>
+</div>
+</td>
+</tr>
+<tr class="rowspacer"><td colspan="2"><br/></td></tr>
+<tr>
+<td>
+<div class="sig-head">Kepala Pusat Data dan Informasi</div>
+<span class="ttd-space"><br/><br/></span>
+<div class="sig">
+<span class="nama">Dr. Ishak Yassir, S.Hut., M.Si.</span>
+<span class="nip">NIP. 197305222000031003</span>
+</div>
+</td>
+<td>
+<div class="sig-head">Kepala Biro Perencanaan</div>
+<span class="ttd-space"><br/><br/></span>
+<div class="sig">
+<span class="nama">Dr. Edi Sulistyo Heri Susetyo, S.Hut., M.Si.</span>
+<span class="nip">NIP. 197012062000031004</span>
+</div>
+</td>
+</tr>
+</table>
+</body>
+</html>

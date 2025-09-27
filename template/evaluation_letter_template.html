@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <title>{{ title }}</title>
+  <style>
+    /* xhtml2pdf: gunakan CSS sederhana saja */
+    /* @page: hanya size & margin sederhana */
+    @page {
+      size: A4;
+      margin: 4mm 15mm 15mm 18mm;
+      background: url("{{ watermark_src }}") no-repeat center center;
+      background-size: 10%;
+
+      /* kalau engine support, bisa begini */
+      background-position: 10% 55%; /* geser lebih ke bawah */
+    }
+
+    body {
+      /* Gunakan font built-in ReportLab agar aman */
+      font-family: Arial, sans-serif;
+      font-size: 11px;
+      line-height: 1.2;
+      color: #111111;
+      position: relative;
+      z-index: 1;
+    }
+
+    h1, h2, h3 {
+      margin: 10px 0 6px 0;
+    }
+    h1 { font-size: 18px; text-align: center; }
+
+    p, ul, ol, table {
+      margin: 10px 0 8px 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    td, th {
+      vertical-align: top;
+      padding: 0px 20px;
+      /* Hindari border CSS berat; boleh, tapi jangan style kompleks */
+    }
+    .rowspacer td {
+      height: 30px;       /* <— set the gap you want */
+      padding: 0;
+      font-size: 0;      /* avoid extra height from text */
+      line-height: 0;
+    }
+
+    ul{
+      list-style-type: disc;
+      list-style-position: outside;
+      margin: 0 0 10pt 0;   /* <- nolkan margin kiri */
+      padding-left: 18pt;   /* <- indent pakai padding */
+    }
+    ol{
+      list-style-type: decimal;
+      list-style-position: outside;
+      margin: 0 0 10pt 0;   /* <- nolkan margin kiri */
+      padding-left: 18pt;   /* <- indent pakai padding */
+    }
+    li{
+      display: list-item;
+      margin: 0 0 4pt 0;
+      text-indent: 0;
+    }
+    .kop-surat{
+      display: block;         /* penting untuk centering */
+      margin: 0 0 0 0pt;    /* center + jarak bawah */
+      width: 100%;            /* skala aman melebar */
+      max-width: 520pt;       /* muat dalam A4 – margin (kira-kira) */
+      height: auto;           /* pertahankan rasio */
+    }
+
+    /* Hindari box-sizing, counter(), margin boxes, position: fixed, dsb. */
+  </style>
+
+  {% if extra_css %}
+  <style>
+    /* Pastikan extra_css juga sederhana */
+    {{ extra_css }}
+  </style>
+  {% endif %}
+</head>
+<body>
+  <!-- <pdf:background>
+    <pdf:overlay align="center" valign="middle">
+      <img src="{{ watermark_src }}" width="400" height="400" />
+    </pdf:overlay>
+  </pdf:background> -->
+  <!-- <div style="width:0; height:0; overflow:hidden;">
+    <pdf:pageTemplate id="wm">
+      <pdf:frame x="18mm" y="15mm" width="174mm" height="267mm"/>
+      <pdf:background>
+        <img src="{{ watermark_src }}" width="595" height="842" />
+      </pdf:background>
+    </pdf:pageTemplate>
+    <pdf:nextPageTemplate name="wm"/>
+  </div> -->
+  <img src="{{ kop_src }}" alt="Kop Surat" class="kop-surat">
+  {{ content | safe }}
+</body>
+</html>
